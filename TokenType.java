@@ -1,4 +1,4 @@
-package j.lox;
+package lox_j;
 
 enum TokenType {
     //single-character
