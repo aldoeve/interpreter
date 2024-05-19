@@ -1,6 +1,6 @@
 CFLAGS = -Wextra -Wall -Wshadow -Wundef -O3
 
-all: test
+all: test.out
 
 main.cpp: common.h
 
