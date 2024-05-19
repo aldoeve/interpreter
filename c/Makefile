@@ -1,8 +1,16 @@
-compile: main.c
-	gcc main.c -o test
+CFLAGS = -Wextra -Wall -Wshadow -Wundef -O3
+
+all: test
+
+main.cpp: common.h
+
+test.out: main.c
+	$(CC) $(CFLAGS) -o $@ $^
 
 run:
+	@echo "Running"
+	@echo "---------------------------------------------------------"
 	@./test
 
 clean:
-	rm -f test
+	rm -f test.out
