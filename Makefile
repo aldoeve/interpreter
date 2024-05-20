@@ -7,4 +7,3 @@ stamper.out:stamper.cpp
 
 clean:
 	rm -f stamper.out
-

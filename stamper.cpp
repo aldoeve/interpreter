@@ -1,13 +1,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <ctime>
 
 enum class State {
     IMAGE    = 0,
     NO_IMAGE = 1,
     FAIL     = 2, 
 };
-
+//-----------------------------------------------------------------------------------
 //Shows appropriate usage of the program.
 inline void help() noexcept {
     std::string_view usage{
@@ -23,10 +24,58 @@ inline void help() noexcept {
     return;
 }
 
+/*
+
+    developer:
+    Date:                           
+    Project Name:
+    Desc:
+
+*/
+
+
+
 //Prints a simple box comment. The name is hard coded, but
 //it can be changed for anyone else.
 inline void boxComment(std::string_view comment) noexcept{
-    std::cout << comment;
+    const int width {84};
+    const std::time_t now         {std::time(0)};
+    std::string_view  horizontal  {"-"};
+    std::string_view  vertical    {"|"};
+    std::string_view  name        {"Aldo Vera-Espinoza"};
+    std::string       projectName {};
+    std::string       desc        {};
+    std::vector<const char*> initals {
+        "    ___     _______ ",
+        "   / \\ \\   / / ____|",
+        "  / _ \\ \\ / /|  _|  ",
+        " / ___ \\ V / | |___ ",
+        "/_/   \\_\\_/  |_____|",
+    };
+
+    std::cout << "Input project name: ";
+    std::cin >> projectName;
+    std::cout << "\nInput project description: ";
+    std::cin >> desc;
+    std::cout << std::endl;
+
+    auto horizontalSides = [comment, horizontal]{
+        std::cout << comment;
+        for(short int i{0}; i < width; ++i)
+            std::cout << horizontal;
+        std::cout << comment << std::endl;
+    };
+
+    horizontalSides();
+    
+    std::cout << comment << '\t' << "Developer: " << name << std::endl;
+    std::cout << comment << '\t' << "Date: " << ctime(&now) << std::endl;
+    std::cout << comment << '\n' << std::endl;
+    std::cout << comment << '\t' << "Project Name: " << projectName << std::endl;
+    std::cout << comment << '\t' << "Description: " << std::endl;
+
+    horizontalSides();
+
     return;
 }
 
