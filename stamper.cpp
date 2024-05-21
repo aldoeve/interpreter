@@ -1,3 +1,13 @@
+//-----------------------------------------------------------------//
+//  Developer: Aldo Vera-Espinoza                  ___     _______ //
+//  Date: Tue May 21 15:43:52 2024                / \ \   / / ____|//
+//                                               / _ \ \ / /|  _|  //
+//  Project Name: Box-comment creator           / ___ \ V / | |___ //
+//  Description:                               /_/   \_\_/  |_____|//
+//    This program creates a simple box comment                    //
+//   with a signiture for convinience.                             //
+//-----------------------------------------------------------------//
+
 #include <iostream>
 #include <iomanip>
 #include <string>
