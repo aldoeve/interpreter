@@ -9,7 +9,7 @@ enum class State {
     NO_IMAGE = 1,
     FAIL     = 2, 
 };
-//-----------------------------------------------------------------------------------
+
 //Shows appropriate usage of the program.
 inline void help() noexcept {
     std::string_view usage{
@@ -28,7 +28,8 @@ inline void help() noexcept {
 //Prints a simple box comment. The name is hard coded, but
 //it can be changed for anyone else.
 inline void boxComment(std::string_view comment) noexcept{
-    const int width {65};
+    const int width  {65};
+    const int offset {2};
     const int signatureWidth  {20};
     const int projectNameSize {29};
     const std::time_t now         {std::time(0)};
@@ -67,8 +68,7 @@ inline void boxComment(std::string_view comment) noexcept{
     };
 
     //Formats the first 5 lines of the box comment
-    auto lineFormatWithSigniture = [width, &initals, &comment, signatureWidth](const int index,std::string_view field){
-        const int offset{2};
+    auto lineFormatWithSigniture = [width, &initals, &comment, signatureWidth, offset](const int index,std::string_view field){
         std::cout << comment << "  " << std::setw(width-signatureWidth - offset) << std::setfill(' ') << std::left << field;
         std::cout << std::setw(signatureWidth) << std::right << std::setfill('8') << initals[index] << comment;
         std::cout << std::endl;
@@ -81,7 +81,34 @@ inline void boxComment(std::string_view comment) noexcept{
     lineFormatWithSigniture(currentLine++, "Date: " + nowStr);
     lineFormatWithSigniture(currentLine++, "");
     lineFormatWithSigniture(currentLine++, "Project Name: " + projectName);
-    lineFormatWithSigniture(currentLine, "Description: " + desc);
+    lineFormatWithSigniture(currentLine, "Description: ");
+
+
+    //Description text that is able to wrap around.
+    desc.insert(0, "  ");
+    const int cutoff {width - 15};
+    std::string buffer {};
+    
+    for(unsigned long int i{0}; i < desc.size(); ++i){
+        if(buffer.size() % cutoff == 0 && !buffer.empty()){
+            std::cout << std::setw(cutoff) << std::setfill('+') << std::left << buffer;
+            std::cout << std::setw(width - cutoff + offset) << std::setfill(' ') << std::right << comment;
+            std::cout << std::endl;
+            buffer.clear();
+        }
+        if(buffer.empty()){
+            buffer += comment;
+            buffer += "  ";
+        }
+        buffer += desc[i];
+    }
+
+    if(!buffer.empty()){
+        std::cout << std::setw(cutoff) << std::setfill(' ') << std::left << buffer;
+        std::cout << std::setw(width - cutoff + offset) << std::setfill(' ') << std::right << comment;
+        std::cout << std::endl;
+    }
+    
 
     horizontalSides();
 
