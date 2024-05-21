@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 #include <vector>
 #include <ctime>
@@ -24,28 +25,20 @@ inline void help() noexcept {
     return;
 }
 
-/*
-
-    developer:
-    Date:                           
-    Project Name:
-    Desc:
-
-*/
-
-
-
 //Prints a simple box comment. The name is hard coded, but
 //it can be changed for anyone else.
 inline void boxComment(std::string_view comment) noexcept{
-    const int width {84};
+    const int width {65};
+    const int signatureWidth  {20};
+    const int projectNameSize {29};
     const std::time_t now         {std::time(0)};
     std::string_view  horizontal  {"-"};
     std::string_view  vertical    {"|"};
-    std::string_view  name        {"Aldo Vera-Espinoza"};
+    std::string       name        {"Aldo Vera-Espinoza"};
     std::string       projectName {};
     std::string       desc        {};
-    std::vector<const char*> initals {
+    std::string       nowStr      {static_cast<std::string>(ctime(&now))};
+    std::vector<std::string_view> initals {
         "    ___     _______ ",
         "   / \\ \\   / / ____|",
         "  / _ \\ \\ / /|  _|  ",
@@ -54,25 +47,35 @@ inline void boxComment(std::string_view comment) noexcept{
     };
 
     std::cout << "Input project name: ";
-    std::cin >> projectName;
+    std::getline(std::cin, projectName);
     std::cout << "\nInput project description: ";
-    std::cin >> desc;
+    std::getline(std::cin, desc);
     std::cout << std::endl;
+    projectName.resize(projectNameSize, ' ');
+    nowStr.pop_back();
 
-    auto horizontalSides = [comment, horizontal]{
+    auto horizontalSides = [&comment, horizontal]{
         std::cout << comment;
         for(short int i{0}; i < width; ++i)
             std::cout << horizontal;
         std::cout << comment << std::endl;
     };
 
+    auto lineFormatWithSigniture = [width, &initals, &comment, signatureWidth](const int index,std::string_view field){
+        const int offset{2};
+        std::cout << comment << "  " << std::setw(width-signatureWidth - offset) << std::setfill(' ') << std::left << field;
+        std::cout << std::setw(signatureWidth) << std::right << std::setfill('8') << initals[index] << comment;
+        std::cout << std::endl;
+    };
+
     horizontalSides();
     
-    std::cout << comment << '\t' << "Developer: " << name << std::endl;
-    std::cout << comment << '\t' << "Date: " << ctime(&now) << std::endl;
-    std::cout << comment << '\n' << std::endl;
-    std::cout << comment << '\t' << "Project Name: " << projectName << std::endl;
-    std::cout << comment << '\t' << "Description: " << std::endl;
+    int currentLine {0};
+    lineFormatWithSigniture(currentLine++, "Developer: " + name);
+    lineFormatWithSigniture(currentLine++, "Date: " + nowStr);
+    lineFormatWithSigniture(currentLine++, "");
+    lineFormatWithSigniture(currentLine++, "Project Name: " + projectName);
+    lineFormatWithSigniture(currentLine, "Description: " + desc);
 
     horizontalSides();
 
