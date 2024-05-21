@@ -38,6 +38,8 @@ inline void boxComment(std::string_view comment) noexcept{
     std::string       projectName {};
     std::string       desc        {};
     std::string       nowStr      {static_cast<std::string>(ctime(&now))};
+    
+    //Keep this to 5 lines
     std::vector<std::string_view> initals {
         "    ___     _______ ",
         "   / \\ \\   / / ____|",
@@ -51,9 +53,12 @@ inline void boxComment(std::string_view comment) noexcept{
     std::cout << "\nInput project description: ";
     std::getline(std::cin, desc);
     std::cout << std::endl;
+    //Remember to do a resize if your name is larger like the next line.
+    //The reason why it is a string is to allow for future modification.
     projectName.resize(projectNameSize, ' ');
     nowStr.pop_back();
 
+    //Does the horizontal sides of a box comment.
     auto horizontalSides = [&comment, horizontal]{
         std::cout << comment;
         for(short int i{0}; i < width; ++i)
@@ -61,6 +66,7 @@ inline void boxComment(std::string_view comment) noexcept{
         std::cout << comment << std::endl;
     };
 
+    //Formats the first 5 lines of the box comment
     auto lineFormatWithSigniture = [width, &initals, &comment, signatureWidth](const int index,std::string_view field){
         const int offset{2};
         std::cout << comment << "  " << std::setw(width-signatureWidth - offset) << std::setfill(' ') << std::left << field;
