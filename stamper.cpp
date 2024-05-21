@@ -91,7 +91,7 @@ inline void boxComment(std::string_view comment) noexcept{
     
     for(unsigned long int i{0}; i < desc.size(); ++i){
         if(buffer.size() % cutoff == 0 && !buffer.empty()){
-            std::cout << std::setw(cutoff) << std::setfill('+') << std::left << buffer;
+            std::cout << std::setw(cutoff) << std::setfill(' ') << std::left << buffer;
             std::cout << std::setw(width - cutoff + offset) << std::setfill(' ') << std::right << comment;
             std::cout << std::endl;
             buffer.clear();
