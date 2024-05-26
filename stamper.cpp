@@ -102,6 +102,8 @@ inline void boxComment(std::string_view comment) noexcept{
     for(unsigned long int i{0}; i < desc.size(); ++i){
         if(buffer.size() % cutoff == 0 && !buffer.empty()){
             std::cout << std::setw(cutoff) << std::setfill(' ') << std::left << buffer;
+            if(comment.size() > 1)
+                for(unsigned long int j{0}; j < comment.size(); ++j) std::cout << ' ';
             std::cout << std::setw(width - cutoff + offset) << std::setfill(' ') << std::right << comment;
             std::cout << std::endl;
             buffer.clear();
@@ -115,6 +117,8 @@ inline void boxComment(std::string_view comment) noexcept{
 
     if(!buffer.empty()){
         std::cout << std::setw(cutoff) << std::setfill(' ') << std::left << buffer;
+        if(comment.size() > 1)
+            for(unsigned long int i{0}; i < comment.size(); ++i) std::cout << ' ';
         std::cout << std::setw(width - cutoff + offset) << std::setfill(' ') << std::right << comment;
         std::cout << std::endl;
     }
