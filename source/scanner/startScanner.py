@@ -19,12 +19,29 @@ class Scanner:
     
     """
     def __init__(self, file_name) -> None:
-        self.__dict__["status"] = StatusCodes.SUCCESS
-        self.file: Optional[TextIOWrapper] = None
+        self._status: StatusCodes = StatusCodes.INIT
+        self._file: Optional[TextIOWrapper] = None
         try:
             self.file = open(file_name, 'r')
-        except:
-            self.__dict__["status"] = StatusCodes.ERROR
+        except Exception as e:
+            print(str(e))
+            self._status = StatusCodes.ERROR
+
+    def getStatus(self) -> StatusCodes: return self._status
+    def _setStatus(self, x: StatusCodes, err:str=None) -> None:
+        """
+        Description:
+            Sets status and rasies exception on any error code.
+        Usage:
+            scanner._setStatus(<Literal>)
+        Exception:
+            General exception with an error message.
+        """
+        if x is not StatusCodes.ERROR:
+            self._status = x
+        else:
+            self._status = x
+            raise Exception(err)
 
     def close(self) -> None:
         """
@@ -33,14 +50,9 @@ class Scanner:
         Usage:
             scanner.close()
         """
-        if self.file:
-            self.file.close()
-
-    def __setattr__(self, name, value):
-        if name == 'status':
-            if value is StatusCodes.ERROR:
-                self.__dict__[name] = StatusCodes.ERROR
-                raise Exception("Scanner encountered and issue.")
+        if self._file is not None:
+            self._file.close()
+            self._file = None
 
     def run(self) -> StatusCodes:
         """
@@ -51,6 +63,8 @@ class Scanner:
         Exceptions:
             Raises an exception on any error.
         """
-        if self.status is StatusCodes.ERROR: return StatusCodes.ERROR
+        if self.getStatus() is StatusCodes.ERROR: return StatusCodes.ERROR
+        self._setStatus(StatusCodes.RUNNING)
+        self._setStatus(StatusCodes.SUCCESS)
 
 

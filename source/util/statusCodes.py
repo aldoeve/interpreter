@@ -7,5 +7,7 @@
 from enum import Enum
 
 class StatusCodes(Enum):
-    ERROR = 1
-    SUCCESS = 0
+    ERROR    = 1
+    SUCCESS  = 0
+    INIT     = 2
+    RUNNING  = 3

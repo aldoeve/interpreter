@@ -33,13 +33,19 @@ def main():
 
     fileToTranslate: str = sys.argv[1]
     scanner = Scanner(fileToTranslate)
-    if scanner.status is StatusCodes.SUCCESS:
+    if scanner.getStatus() is StatusCodes.INIT:
         try:
             scanner.run()
         finally:
             scanner.close()
     else:
         return StatusCodes.ERROR.value
+    
+    processes:StatusCodes = [scanner.getStatus()]
+
+    if StatusCodes.ERROR in processes:
+        return StatusCodes.ERROR.value
+
     return StatusCodes.SUCCESS.value
 
 sys.exit(main())
