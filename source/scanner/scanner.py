@@ -4,6 +4,7 @@
 # Date updated: Sun May 11 04:34:56 PM CDT 2025
 #--------------------------------------------------------------------
 from util.statusCodes import StatusCodes
+from .myToken import TokenType, Token
 
 from typing import Optional
 from io import TextIOWrapper
@@ -21,8 +22,10 @@ class Scanner:
     def __init__(self, file_name) -> None:
         self._status: StatusCodes = StatusCodes.INIT
         self._file: Optional[TextIOWrapper] = None
+        self._line: int = 0
+        self._tokens: list[Token] = list
         try:
-            self.file = open(file_name, 'r')
+            self._file = open(file_name, 'r')
         except Exception as e:
             print(str(e))
             self._status = StatusCodes.ERROR
@@ -42,6 +45,15 @@ class Scanner:
         else:
             self._status = x
             raise Exception(err)
+    
+    def _error(self, msg: str) -> None:
+        """
+        Description:
+            Prints debug lines for transcompiling errors.
+        Usage:
+            self._error(<'str'>)
+        """
+        print(f"Line {self._line}: {msg}")
 
     def close(self) -> None:
         """
@@ -54,6 +66,38 @@ class Scanner:
             self._file.close()
             self._file = None
 
+    def _consumeLine(self) -> str:
+        """
+        Description:
+            Reads next line using readline().
+        Usage:
+            line = self._consumeLine()
+        """
+        self._line += 1
+        return self._file.readline()
+    
+    def _scanToken(token: str) -> None:
+        """
+        Description:
+            Identifies the token and appends it to the list of tokens.
+        Usage:
+            self._scanToken(<str>)
+        """
+
+    def _tokenizeLine(self, line:str) -> None:
+        """
+        Description:
+            starts tokenization of a line.
+        Usage:
+            self._tokenize_line(<str>)
+        """
+        strArry:list[str] = line.split()
+
+        for token in strArry:
+            self._scanToken(token)
+        self._tokens.append(Token(TokenType.EOF, "", None, self._line))
+
+
     def run(self) -> StatusCodes:
         """
         Description:
@@ -63,10 +107,14 @@ class Scanner:
         Exceptions:
             Raises an exception on any error.
         """
-        if self.getStatus() is StatusCodes.ERROR: return StatusCodes.ERROR
+        if self.getStatus() is not StatusCodes.INIT: return StatusCodes.ERROR
+
         self._setStatus(StatusCodes.RUNNING)
 
-        
+        line = self._consumeLine()
+        while line:
+            self._tokenizeLine(line)
+            line = self._consumeLine()
 
         self._setStatus(StatusCodes.SUCCESS)
 

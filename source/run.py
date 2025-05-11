@@ -8,7 +8,7 @@ import sys
 
 from util.statusCodes import StatusCodes
 from util.settings import Settings
-from scanner.startScanner import Scanner
+from scanner.scanner import Scanner
 
 def help():
     usageAndDetails: str = \
