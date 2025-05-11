@@ -1,7 +1,7 @@
 #--------------------------------------------------------------------
 # This file is the basic scanner code.
 #
-# Date updated: Sat May 10 11:56:23 PM CDT 2025
+# Date updated: Sun May 11 04:34:56 PM CDT 2025
 #--------------------------------------------------------------------
 from util.statusCodes import StatusCodes
 
@@ -65,6 +65,9 @@ class Scanner:
         """
         if self.getStatus() is StatusCodes.ERROR: return StatusCodes.ERROR
         self._setStatus(StatusCodes.RUNNING)
+
+        
+
         self._setStatus(StatusCodes.SUCCESS)
 
 
