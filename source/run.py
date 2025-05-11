@@ -1,15 +1,45 @@
 import sys
-from util.errorCodes import ( 
-    ErrorCodes, Settings
-)
+
+from util.statusCodes import StatusCodes
+from util.settings import Settings
+from scanner.startScanner import Scanner
 
 def help():
-    print("help")
+    usageAndDetails: str = \
+    """
+Usage: python3 run.py <input_file> [options]
+
+Arguements:
+    <input_file>    Path to file to py script turn to bash
+
+Options:
+    -h, --help          Show this message
+
+Example:
+    python3 run.py test.py 
+    """
+    print(usageAndDetails)
 
 def main():
-    num_args: int = len(sys.argv) - 1
-    if num_args != Settings.ARGS.value:
+    listArgs: list[str] = sys.argv[1:]
+    num_args: int = len(listArgs)
+    
+    if "--help" in listArgs or "-h" in listArgs:
         help()
-        return ErrorCodes.ERROR.value
+        return StatusCodes.SUCCESS.value
+    elif num_args != Settings.EXPECTED_ARGS.value:
+        help()
+        return StatusCodes.ERROR.value
 
-main()
+    fileToTranslate: str = sys.argv[1]
+    scanner = Scanner(fileToTranslate)
+    if scanner.status is StatusCodes.SUCCESS:
+        try:
+            scanner.run()
+        finally:
+            scanner.close()
+    else:
+        return StatusCodes.ERROR.value
+    return StatusCodes.SUCCESS.value
+
+sys.exit(main())
