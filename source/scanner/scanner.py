@@ -115,7 +115,7 @@ class Scanner:
                 self._addToken(TokenType.STAR, '*', None)
             case _:
                 self._setStatus(StatusCodes.SYNTAX_ERROR)
-                self._error(f"Issue identifying token {token}")
+                self._error(f"Unexpected character {token}")
 
 
     def _tokenizeLine(self, line:str) -> None:
