@@ -76,13 +76,47 @@ class Scanner:
         self._line += 1
         return self._file.readline()
     
-    def _scanToken(token: str) -> None:
+    def _addToken(self, token: TokenType, lexeme: str, literal: object) -> None:
+        """
+        Descripition:
+            Appends a line aware token to the tokens list.
+        Usage:
+            self._addToken(<TokenType>, <str>, <object>)
+        """
+        self._tokens.append(Token(token, lexeme, literal, self._line))
+
+    def _scanToken(self, token: str) -> None:
         """
         Description:
             Identifies the token and appends it to the list of tokens.
         Usage:
             self._scanToken(<str>)
         """
+        match token:
+            case '(':
+                self._addToken(TokenType.LEFT_PAREN, '(', None)
+            case ')':
+                self._addToken(TokenType.RIGHT_PAREN, ')', None)
+            case '{':
+                self._addToken(TokenType.LEFT_BRACE, '{', None)
+            case '}':
+                self._addToken(TokenType.LEFT_BRACE, '}', None)
+            case ',':
+                self._addToken(TokenType.COMMA, ',', None)
+            case '.':
+                self._addToken(TokenType.DOT, '.', None)
+            case '-':
+                self._addToken(TokenType.MINUS, '-', None)
+            case '+':
+                self._addToken(TokenType.PLUS, '+', None)
+            case ';':
+                self._addToken(TokenType.SEMICOLON, ';', None)
+            case '*':
+                self._addToken(TokenType.STAR, '*', None)
+            case _:
+                self._setStatus(StatusCodes.SYNTAX_ERROR)
+                self._error(f"Issue identifying token {token}")
+
 
     def _tokenizeLine(self, line:str) -> None:
         """
@@ -95,7 +129,7 @@ class Scanner:
 
         for token in strArry:
             self._scanToken(token)
-        self._tokens.append(Token(TokenType.EOF, "", None, self._line))
+        self._addToken(TokenType.EOF, '', None)
 
 
     def run(self) -> StatusCodes:
@@ -111,11 +145,13 @@ class Scanner:
 
         self._setStatus(StatusCodes.RUNNING)
 
-        line = self._consumeLine()
+        line:str = self._consumeLine()
         while line:
             self._tokenizeLine(line)
             line = self._consumeLine()
 
-        self._setStatus(StatusCodes.SUCCESS)
-
+        finalStatus: StatusCodes = StatusCodes.SUCCESS
+        if self.getStatus() is StatusCodes.SYNTAX_ERROR:
+            finalStatus = StatusCodes.ERROR
+        self._setStatus(finalStatus)
 

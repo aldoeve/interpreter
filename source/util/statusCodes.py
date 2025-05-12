@@ -11,3 +11,4 @@ class StatusCodes(Enum):
     SUCCESS  = 0
     INIT     = 2
     RUNNING  = 3
+    SYNTAX_ERROR = 4

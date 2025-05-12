@@ -8,8 +8,8 @@ from enum import Enum
 
 class TokenType(Enum):
     # Single char
-    LEFT_PARAM        = 0
-    RIGHT_PARAM       = 1
+    LEFT_PAREN        = 0
+    RIGHT_PAREN       = 1
     LEFT_BRACE        = 2
     RIGHT_BRACE       = 3
     COMMA             = 4
