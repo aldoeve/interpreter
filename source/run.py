@@ -39,19 +39,17 @@ def main():
 
     fileToTranslate: str = sys.argv[1]
     scanner = Scanner(fileToTranslate)
+    runtimeStatus: StatusCodes = StatusCodes.SUCCESS
+
     if scanner.getStatus() is StatusCodes.INIT:
         try:
             scanner.run()
+            runtimeStatus = scanner.getStatus()
         finally:
             scanner.close()
     else:
-        return StatusCodes.ERROR.value
+        runtimeStatus = StatusCodes.ERROR
     
-    processes:StatusCodes = [scanner.getStatus()]
-
-    if StatusCodes.ERROR in processes:
-        return StatusCodes.ERROR.value
-
-    return StatusCodes.SUCCESS.value
+    return (StatusCodes.SUCCESS.value if runtimeStatus is not StatusCodes.ERROR else StatusCodes.ERROR.value)
 
 sys.exit(main())

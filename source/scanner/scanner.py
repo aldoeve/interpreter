@@ -23,12 +23,40 @@ class Scanner:
         self._status: StatusCodes = StatusCodes.INIT
         self._file: Optional[TextIOWrapper] = None
         self._line: int = 0
-        self._tokens: list[Token] = list
+        self._tokens: list[Token] = list()
+        self._tokenDict: dict = self._loadDict()
         try:
             self._file = open(file_name, 'r')
         except Exception as e:
             print(str(e))
             self._status = StatusCodes.ERROR
+
+    def _loadDict(self)-> dict:
+        """
+        Description:
+            Creates the static map that hold token info to match to.
+        Usage:
+            self._loadMap()
+        """
+        return {
+            '(': TokenType.LEFT_PAREN,
+            ')': TokenType.RIGHT_PAREN,
+            '{': TokenType.LEFT_BRACE,
+            '}': TokenType.RIGHT_BRACE,
+            ',': TokenType.COMMA,
+            '.': TokenType.DOT,
+            '-': TokenType.MINUS,
+            '+': TokenType.PLUS,
+            ';': TokenType.SEMICOLON,
+            ':': TokenType.COLON,
+            '\\': TokenType.SLASH,
+            '*': TokenType.STAR,
+            'is': TokenType.IS,
+            'not': TokenType.NOT,
+            '!=': TokenType.NOT_EQUAL,
+            '=': TokenType.EQUAL,
+            
+        }
 
     def getStatus(self) -> StatusCodes: return self._status
     def _setStatus(self, x: StatusCodes, err:str=None) -> None:
@@ -92,30 +120,10 @@ class Scanner:
         Usage:
             self._scanToken(<str>)
         """
-        match token:
-            case '(':
-                self._addToken(TokenType.LEFT_PAREN, '(', None)
-            case ')':
-                self._addToken(TokenType.RIGHT_PAREN, ')', None)
-            case '{':
-                self._addToken(TokenType.LEFT_BRACE, '{', None)
-            case '}':
-                self._addToken(TokenType.LEFT_BRACE, '}', None)
-            case ',':
-                self._addToken(TokenType.COMMA, ',', None)
-            case '.':
-                self._addToken(TokenType.DOT, '.', None)
-            case '-':
-                self._addToken(TokenType.MINUS, '-', None)
-            case '+':
-                self._addToken(TokenType.PLUS, '+', None)
-            case ';':
-                self._addToken(TokenType.SEMICOLON, ';', None)
-            case '*':
-                self._addToken(TokenType.STAR, '*', None)
-            case _:
-                self._setStatus(StatusCodes.SYNTAX_ERROR)
-                self._error(f"Unexpected character {token}")
+        tokenType: Optional[TokenType] = self._tokenDict.get(token)
+        if tokenType is None:
+            self._setStatus(StatusCodes.SYNTAX_ERROR)
+            self._error(f"Unexpected character: {token}")            
 
 
     def _tokenizeLine(self, line:str) -> None:
@@ -132,7 +140,7 @@ class Scanner:
         self._addToken(TokenType.EOF, '', None)
 
 
-    def run(self) -> StatusCodes:
+    def run(self):
         """
         Description:
             Starts scanning.
@@ -150,8 +158,6 @@ class Scanner:
             self._tokenizeLine(line)
             line = self._consumeLine()
 
-        finalStatus: StatusCodes = StatusCodes.SUCCESS
-        if self.getStatus() is StatusCodes.SYNTAX_ERROR:
-            finalStatus = StatusCodes.ERROR
-        self._setStatus(finalStatus)
+        if self.getStatus() is not StatusCodes.ERROR:
+            self._setStatus(StatusCodes.SUCCESS)
 

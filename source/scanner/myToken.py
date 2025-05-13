@@ -17,38 +17,40 @@ class TokenType(Enum):
     MINUS             = 6
     PLUS              = 7
     SEMICOLON         = 8
-    SLASH             = 9
-    STAR              = 10
+    COLON             = 9
+    SLASH             = 10
+    STAR              = 11
     # One or two chars
-    BANG              = 11
-    BANG_EQUAL        = 12
-    EQUAL             = 13
-    EQUAL_EQUAL       = 14
-    GREATER           = 15
-    GREATER_EQUAL     = 16
-    LESS              = 17
-    LESS_EQUAL        = 18
+    IS                = 12
+    NOT               = 13
+    NOT_EQUAL         = 14
+    EQUAL             = 15
+    EQUAL_EQUAL       = 16
+    GREATER           = 17
+    GREATER_EQUAL     = 18
+    LESS              = 19
+    LESS_EQUAL        = 20
     # Literals
-    IDENTIFIER        = 19
-    STRING            = 20
-    NUMBER            = 21
+    IDENTIFIER        = 21
+    STRING            = 22
+    NUMBER            = 23
     # Keywords
-    AND               = 22
-    CLASS             = 23
-    ELSE              = 24
-    FALSE             = 25
-    DEF               = 26
-    FOR               = 27
-    IF                = 28
-    NONE              = 29
-    OR                = 30
-    PRINT             = 31
-    RETURN            = 32
-    SELF              = 33
-    TRUE              = 34
-    VAR               = 35
-    WHILE             = 37
-    EOF               = 38
+    AND               = 24
+    CLASS             = 25
+    ELSE              = 26
+    FALSE             = 27
+    DEF               = 28
+    FOR               = 29
+    IF                = 30
+    NONE              = 31
+    OR                = 32
+    PRINT             = 33
+    RETURN            = 34
+    SELF              = 35
+    TRUE              = 36
+    VAR               = 37
+    WHILE             = 38
+    EOF               = 39
 
 
 class Token():
