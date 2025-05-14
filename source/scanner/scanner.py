@@ -10,6 +10,7 @@ from typing import Optional
 from io import TextIOWrapper
 
 import re
+import keyword
 
 class Scanner:
     """
@@ -28,6 +29,7 @@ class Scanner:
         self._tokenDict: dict = self._loadDict()
         self._discardMode: bool = False
         self._stringMode: bool = False
+        self._keywords: list = [kw for kw in keyword.kwlist if len(kw) > 2] +["print"]
         try:
             self._file = open(file_name, 'r')
         except Exception as e:
@@ -147,27 +149,34 @@ class Scanner:
             self._scanToken(<str>)
         """
         #tokenType: Optional[TokenType] = self._tokenDict.get(token)
-        lookahead1Valid = lambda i, word, : True if i < len(word) - 1 else False
+        lookahead1Valid  = lambda i, word, : True if i < len(word) - 1 else False
         isLookAhead1This = lambda i, tokenType, word: tokenType == self._tokenDict.get(word[i + 1])
 
-        var = r"\b[a-zA-Z_][a-zA-Z0-9_]*\b"
-        matches = [(match.start(), match.end(), match.group()) for match in re.finditer(var, word)]
+        var     = r"^[a-zA-Z_][a-zA-Z0-9_]*$"
+        number  = r'[-+]?\d*\.?\d+'
 
+        #filter for keywords larger than 2 chars
+        keyword = r"\b(" + "|".join(self._keywords) + r")\b"
+        isKeyword = False
+
+        i = 0
+        while i < len(word):
+            if not self._stringMode and not self._discardMode:
+                varNameMatch = re.search(var, word[i:])
+                if varNameMatch is None: varNameMatch = re.search(number, word[i:])
+                if varNameMatch is None: 
+                    varNameMatch = re.search(keyword, word[i:])
+                    if varNameMatch: isKeyword = True
+                if varNameMatch and varNameMatch.start() <= i <= varNameMatch.end():
+                    self._addToken(TokenType.IDENTIFIER if not isKeyword else self._tokenDict.get(word[varNameMatch.start():varNameMatch.end()])\
+                                   , word[varNameMatch.start():varNameMatch.end()], word[varNameMatch.start():varNameMatch.end()])
+                    i = varNameMatch.end()
     
-        for i in range(len(word)):
-
-            tokenType: Optional[TokenType] = self._tokenDict.get(word[i])
-
-            #if not self._stringMode and not self._discardMode:
-            #    if matches:
-            #        in_range = any(start <= i <= end for start, end, _ in matches)
-            #        if in_range:
-            #            i = max(end for start, end, _ in matches)
-            #if matches:
-            #    self._addToken(TokenType.IDENTIFIER, matches[0][2], matches[0][2])     
-            #if i == len(word): break                   
+                if i >= len(word): return
 
             # Identifies one-two character tokens
+            tokenType: Optional[TokenType] = self._tokenDict.get(word[i])
+
             match tokenType:
                 case TokenType.EQUAL:
                     if lookahead1Valid(i, word) and isLookAhead1This(i, TokenType.EQUAL, word): 
@@ -207,6 +216,7 @@ class Scanner:
                 self._setStatus(StatusCodes.SYNTAX_ERROR)
             else:
                 self._addToken(tokenType, word[i], word[i])
+            i += 1 
 
     def _tokenizeLine(self, line:str) -> None:
         """
