@@ -84,6 +84,7 @@ class Scanner:
             '#':      TokenType.COMMENT,
             '\"':     TokenType.QUOTES,
             '\'':     TokenType.QUOTES,
+            ' ':      TokenType.SPACE,
         }
 
     def getStatus(self) -> StatusCodes: return self._status
@@ -153,14 +154,16 @@ class Scanner:
         isLookAhead1This = lambda i, tokenType, word: tokenType == self._tokenDict.get(word[i + 1])
 
         var     = r"^[a-zA-Z_][a-zA-Z0-9_]*$"
-        number  = r'[-+]?\d*\.?\d+'
+        number  = r'(?<!\w)(\d+(\.\d+)?)(?!\w)'
 
         #filter for keywords larger than 2 chars
         keyword = r"\b(" + "|".join(self._keywords) + r")\b"
         isKeyword = False
 
         i = 0
+        #print(f"working with: {word}")
         while i < len(word):
+            #print(f"{word[i]}")
             if not self._stringMode and not self._discardMode:
                 varNameMatch = re.search(var, word[i:])
                 if varNameMatch is None: varNameMatch = re.search(number, word[i:])
@@ -208,6 +211,8 @@ class Scanner:
                     else:
                         self._stringMode = not self._stringMode
                 
+            #print(f"token: {tokenType}")
+
             if self._stringMode:
                 tokenType = TokenType.STRING
                 self._addToken(tokenType, word[i], word[i])
@@ -225,7 +230,8 @@ class Scanner:
         Usage:
             self._tokenize_line(<str>)
         """
-        words:list[str] = line.split()
+        pattern = r'".*?"|[^"\s]+'
+        words:list[str] = re.findall(pattern, line)
 
         for index, word in enumerate(words):
             self._scanTokenFromWord(word, index == len(words) - 1)

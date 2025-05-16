@@ -56,6 +56,7 @@ class TokenType(Enum):
     QUOTES            = 42
     COMMENT           = 43
     LONG_COMMENT      = 44
+    SPACE             = 45
 
 
 class Token():
