@@ -9,6 +9,7 @@ import sys
 from util.statusCodes import StatusCodes
 from util.settings import Settings
 from scanner.scanner import Scanner
+from lexer.lexer import Lexer
 
 def help():
     usageAndDetails: str = \
@@ -49,6 +50,13 @@ def main():
             scanner.close()
     else:
         runtimeStatus = StatusCodes.ERROR
+
+    if runtimeStatus is not StatusCodes.ERROR:
+        try :
+            lexer = Lexer(scanner.getTokensList())
+            lexer.transcribe()
+        except:
+            runtimeStatus = StatusCodes.ERROR
     
     return (StatusCodes.SUCCESS.value if runtimeStatus is not StatusCodes.ERROR else StatusCodes.ERROR.value)
 

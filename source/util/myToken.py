@@ -51,7 +51,7 @@ class TokenType(Enum):
     SELF              = 37
     TRUE              = 38
     WHILE             = 39
-    EOF               = 40
+    EOL               = 40
     ELSE_IF           = 41
     QUOTES            = 42
     COMMENT           = 43

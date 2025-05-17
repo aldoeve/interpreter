@@ -4,7 +4,7 @@
 # Date updated: Sun May 11 04:34:56 PM CDT 2025
 #--------------------------------------------------------------------
 from util.statusCodes import StatusCodes
-from .myToken import TokenType, Token
+from util.myToken import TokenType, Token
 
 from typing import Optional
 from io import TextIOWrapper
@@ -88,6 +88,15 @@ class Scanner:
         }
 
     def getStatus(self) -> StatusCodes: return self._status
+    def getTokensList(self) -> list[Token]:
+        """
+        Description:
+            Returns a list of tokens if successfully tokenized else returns None.
+        Usage:
+            scanner.getTokensList()
+        """
+        return self._tokens if self.getStatus() == StatusCodes.SUCCESS else None
+    
     def _setStatus(self, x: StatusCodes, err:str=None) -> None:
         """
         Description:
@@ -256,10 +265,8 @@ class Scanner:
         while line:
             self._tokenizeLine(line)
             line = self._consumeLine()
+            self._addToken(TokenType.EOL, '', '')
 
         if self.getStatus() is not StatusCodes.ERROR:
             self._setStatus(StatusCodes.SUCCESS)
-
-        for token in self._tokens:
-            print(token.dump())
 
