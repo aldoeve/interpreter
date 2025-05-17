@@ -48,7 +48,7 @@ class TokenType(Enum):
     OR                = 34
     PRINT             = 35
     RETURN            = 36
-    SELF              = 37
+    INPUT             = 37
     TRUE              = 38
     WHILE             = 39
     EOL               = 40

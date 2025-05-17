@@ -8,8 +8,8 @@ import sys
 
 from util.statusCodes import StatusCodes
 from util.settings import Settings
-from scanner.scanner import Scanner
-from lexer.lexer import Lexer
+from lexer.lexer import Scanner
+from parser.parser import Lexer
 
 def help():
     usageAndDetails: str = \
@@ -55,7 +55,8 @@ def main():
         try :
             lexer = Lexer(scanner.getTokensList())
             lexer.transcribe()
-        except:
+        except Exception as e:
+            print(e)
             runtimeStatus = StatusCodes.ERROR
     
     return (StatusCodes.SUCCESS.value if runtimeStatus is not StatusCodes.ERROR else StatusCodes.ERROR.value)
